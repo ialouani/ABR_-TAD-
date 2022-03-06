@@ -1,11 +1,18 @@
 #include"./link.h"
+//#include"./bintree.h"
 #include<stdio.h>
 #include<stdlib.h>
 #include<limits.h>
 
+/*#if defined SECOND
+static const struct bintree btr={__INT_MAX__,{NULL,NULL}};
+static struct lelement sentinel={(void*)(&btr),(struct lelement*)(&(sentinel))};
+#define SENTINEL ((struct lelement*)&sentinel)
+#else*/
 static const int number=__INT_MAX__;
 static const struct lelement sentinel={(void*)(&number),(struct lelement*)(&(sentinel))};
 #define SENTINEL ((struct lelement*)&sentinel)
+//#endif
 
 struct link lnk_init_empty(){
   struct link l;

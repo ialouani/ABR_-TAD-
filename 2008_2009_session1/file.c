@@ -2,6 +2,7 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<limits.h>
+//#include "./bintree.h"
 
 struct file{
   struct link* l;
@@ -29,8 +30,11 @@ void file_push(struct file* q, void* z){
 }
 
 void file_pop(struct file* q){
+  /*struct lelement* top=file_top(q);
+    struct bintree* top2=(struct bintree*)top->data;*/
   struct lelement* top=file_top(q);
   lnk_remove_tail(q->l);
+  //free23(top2);
   free(top);
 }
 
