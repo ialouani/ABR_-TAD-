@@ -107,7 +107,7 @@ int size(struct file* q){
 fin de la qst2 et de l'exo2.
 **************************************************************
 EX3:
-dans bintree.c; on relance l'implementation just-in-time de struct file comme ceci:
+1.dans bintree.c; on relance l'implementation just-in-time de struct file comme ceci:
 struct file{
 struct bintree* btr;
 struct file* next;
@@ -117,8 +117,32 @@ file_top/file_push/file_pop/file_empty/file_is_empty().
 Apres,
 on ecrit l'algo. de parcours en profondeur 2RECURSIVEMENT (!<)::
 ->utilisation d'une file ; c'est pour celaLE (*).
-
-
+int count(struct bintree* bt){
+int cpt=0;
+struct file* fl=file_empty();
+file_push(fl,bt);
+while(!file_is_empty(fl)){
+struct bintree* btr2=file_top(fl);
+file_pop(fl);
+if(!bt_is_empty(bt2)){
+cpt++;
+file_push(fl,btr2->children[1]);//<=>file_push(fl,bt_left(btr2))
+file_push(fl,btr2->children[0]);//<=>file_push(fl,bt_right(btr2))
+}
+}
+free(fl);
+return cpt;
+}
+(A retenir!!)./////
+2. O(n)/parcours un nbr constant de fois par procedularite de la boucle tout sommet ; enfin presque..
+Pour garantir cela
+=>optimisation de l'ajout en queue(pop/top pour la pile)OU acces(<<):
+=>ajout de tail=>using lnk_remove_tail via manip. de tail direct contenant void* qui en anti-abstraction est de type direct dans bintree.c: stuct bintree*.
+VOILA.
+FIN EXO3.
+---------------------------------
+---------------------------------------------------------------
+FIN_EXAM1.
 
 
 
