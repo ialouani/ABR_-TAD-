@@ -1,0 +1,183 @@
+EXO1:
+int sentinel(void* e);//permet de savoir si $1 qui correspond a l'adresse cournte parcours tableau par armithmetique des pointeurs est une sentinelle ou pas.
+1.
+(return *(int*)e==SET__BOUND pour un tableau d'entiers) --rq.
+int count(void* t, size_t esize){
+//esize=sizeof(chaque element du tableau) =4 pour un int*.(--rq)
+int len=0;
+//modification de l'adresse par passage de pointeur=>pas d'effets de bord
+//=>manipulation direct sans pointeur intermediaire vers les elements pointes..///
+while(!sentinel(t)){
+len++;
+t+=esize;
+}
+return len;
+}
+2.facile.
+************************************
+EXO2:
+1.Se proteger contre les inclusions multiples.
+2.struct link est une structure dont le contenu pointe vers le debut de la cellule et la fin de la cellule ; c'est un type permettant la gestion du chainage entre les cellules d'apres ses prototypes, permet donc de faire une abstraction en considerant plusieurs TAD implementes via cette struct link. struct lelement represente la capsule ou on va greffer les donnees c'est le type representant les elements chaines grace a la struct link +bien sur ses methodes.
+3.
+struct file* file_empty(void){
+struct link l2=lnk_init_empty();
+struct file* f=malloc(sizeof(struct file));
+f->l=malloc(sizeof(struct link));
+f->l->head=l2.head;
+f->l->tail=l2.tail;
+return f;
+}
+int file_is_empty(struct file* q){
+struct link ll=lnk_init_empty();
+return q->l->head==ll.head && q->l->tail==ll.tail;
+}
+void file_push(struct file* q, void* z){
+struct lelement* add=malloc(sizeof(struct lelement));
+add->data=z;add->next=NULL;
+lnk_add_head(q->l,add);
+}
+void file_pop(struct file* q){
+struct lelement* top=file_top(q);
+lnk_remove_tail(q->l);
+free(top);
+}//permet de ne pas faire des free au niveau de la struct link.
+void* file_top(struct file* q){
+struct lelement* tmp=f->l->head;
+struct link ll2=lnk_init_empty();
+while(tmp->next->data!=ll2.head->data){
+tmp=tmp->next;
+}
+return tmp;
+}
+On a ajoute un display pour afficher les elements supposes entiers de la file pour les tests.
+(link.c +run_link_tests AUSSI avec l'outil MEMCHECK de valgrind POUR tous les tests(voir Makefile)).
+->completer: #include "./link.h"
+type incomplet en file.h du TAD:file;;
+&>> ajouter la fonction free2(struct file*)::
+EN FILE.C:>>>
+void free2(struct file* q){
+struct lelement* temp=q->l->head;
+struct lelement* temp2;
+while(temp->next!=temp){
+temp2=temp->next;
+free(temp);
+temp=temp2;
+}
+free(q->l);
+free(q);
+}
+//CAR elle est essentielle.(demandee implicitement)
+=>sort_file(via tri a bulle(plus simple)):::>>
+void sort_file(struct file* q){
+  struct lelement* tete=q->l->head;
+  void* t[size(q)];
+  for(int j=0;j<size(q);j++){
+    t[j]=tete->data;
+    tete=tete->next;
+  }
+  for(int k=size(q);k>=1;k--){
+    for(int h=0;h<k-1;h++){
+      if(*(int*)t[h]>*(int*)t[h+1]){
+	void *ptr=t[h+1];
+	t[h+1]=t[h];
+	t[h]=ptr;
+      }
+    }
+  }
+  struct lelement* tete2=q->l->head;
+  struct link lk=lnk_init_empty();
+  int p=0;
+  while(tete2->data!=lk.head->data){
+    tete2->data=t[p];
+    p++;
+    tete2=tete2->next;
+  }
+}
+->necessITE une fonction size:
+int size(struct file* q){
+  struct lelement* tmp=q->l->head;
+  struct link ll2=lnk_init_empty();
+  int len=0;
+  while(tmp->data!=ll2.head->data){
+    len++;
+    tmp=tmp->next;
+  }
+  return len;
+}
+fin de la qst2 et de l'exo2.
+**************************************************************
+EX3:
+1.dans bintree.c; on relance l'implementation just-in-time de struct file comme ceci:
+struct file{
+struct bintree* btr;
+struct file* next;
+};
++les fcts. du TAD:(*<)
+file_top/file_push/file_pop/file_empty/file_is_empty().
+Apres,
+on ecrit l'algo. de parcours en profondeur 2RECURSIVEMENT (!<)::
+->utilisation d'une file ; c'est pour celaLE (*).
+int count(struct bintree* bt){
+int cpt=0;
+struct file* fl=file_empty();
+file_push(fl,bt);
+while(!file_is_empty(fl)){
+struct bintree* btr2=file_top(fl);
+file_pop(fl);
+if(!bt_is_empty(bt2)){
+cpt++;
+file_push(fl,btr2->children[1]);//<=>file_push(fl,bt_left(btr2))
+file_push(fl,btr2->children[0]);//<=>file_push(fl,bt_right(btr2))
+}
+}
+free(fl);
+return cpt;
+}
+(A retenir!!)./////
+2. O(n)/parcours un nbr constant de fois par procedularite de la boucle tout sommet ; enfin presque..
+Pour garantir cela
+=>optimisation de l'ajout en queue(pop/top pour la pile)OU acces(<<):
+=>ajout de tail=>using lnk_remove_tail via manip. de tail direct contenant void* qui en anti-abstraction est de type direct dans bintree.c: stuct bintree*.
+VOILA.
+FIN EXO3.
+---------------------------------
+---------------------------------------------------------------
+FIN_EXAM1.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
