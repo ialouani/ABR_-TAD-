@@ -2,7 +2,7 @@
 
 s1=12
 s2=245
-exo3_run:
+exo3_run: exo2__2 
 	valgrind ./exo2__2 ${s1}
 	valgrind ./exo2__2 ${s2}
 exo3_run0: exo3_run01 exo3_run1
